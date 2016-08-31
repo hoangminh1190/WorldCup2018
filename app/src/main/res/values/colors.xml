@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#32B846</color>
+    <color name="colorPrimaryDark">#268C35</color>
+    <color name="colorAccent">#FFC74B46</color>
+    <color name="actionbar_color">#3FBA91</color>
+
+    <color name="titlestrip_background_color">#DEDEDE</color>
+    <color name="titlestrip_text_color">#999999</color>
+
+    <color name="item_border_color">#666666</color>
+    <color name="item_default_color">#EEEEEE</color>
+    <color name="item_pressed_color">#CCCCCC</color>
+    <color name="item_activated_color">#77CEEE</color>
+    <color name="bg_main_content">#E1E6EB</color>
+    <color name="divider_color">#C8281C</color>
+
+    <!-- colors -->
+    <color name="primary">#785447</color>
+    <color name="primaryDark">#5B3F36</color>
+
+
+</resources>
