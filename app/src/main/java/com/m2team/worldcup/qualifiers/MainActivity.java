@@ -175,10 +175,10 @@ public class MainActivity extends BaseActivity
 
             } else if (position == 1) {
                 //return match fragment
-                return EuroQualifierFragment.newInstance(position);
+                return SouthAmericaQualifierFragment.newInstance(position);
             } else if (position == 2) {
                 //return team fragment
-                return EuroQualifierFragment.newInstance(position);
+                return SouthAmericaQualifierFragment.newInstance(position);
             }
             return null;
         }

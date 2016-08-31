@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.model.Group;
-import com.m2team.worldcup.qualifiers.group.presenter.QualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.presenter.EuroQualifierPresenter;
 
 import java.util.List;
 
@@ -40,9 +40,9 @@ public class EuroQualifierFragment extends Fragment implements OnDataCompleteLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        QualifierPresenter presenter = new QualifierPresenter();
+        EuroQualifierPresenter presenter = new EuroQualifierPresenter(getActivity());
         presenter.setOnDataComplete(this);
-        presenter.getEuroQualifier();
+        presenter.getData();
     }
 
     @Override

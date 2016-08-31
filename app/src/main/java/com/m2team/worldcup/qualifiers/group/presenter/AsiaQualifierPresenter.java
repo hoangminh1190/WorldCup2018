@@ -1,7 +1,12 @@
 package com.m2team.worldcup.qualifiers.group.presenter;
 
+import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.model.Team;
 import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
@@ -17,47 +22,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
-import rx.Scheduler;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
-public class QualifierPresenter {
+import static com.m2team.worldcup.common.Common.TAG;
+
+public class AsiaQualifierPresenter extends Presenter {
 
 
-    public static String EURO_LINK = "http://www.fifa.com/worldcup/preliminaries/europe/index.html#276483";
+    public static String LINK = "http://www.fifa.com/worldcup/preliminaries/asia/index.html";
 
     private OnDataCompleteListener listener;
+    private Context mContext;
 
-    public QualifierPresenter() {
-
+    public AsiaQualifierPresenter(Context context) {
+        mContext = context;
     }
 
-    public void getEuroQualifier() {
-        Observable<List<Group>> euroSubscription = Observable.create(new Observable.OnSubscribe<List<Group>>() {
+    public void getData() {
+        Observable<List<Group>> result = getDataStore();
+        result
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new QualifierSubscriber());
+    }
+
+    public Observable<List<Group>> getDataStore() {
+        String json = Common.getPrefString(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
+        Log.d(TAG, "json from cache " + json);
+        if (!TextUtils.isEmpty(json)) {
+            long expiredTime = Common.getPrefLong(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED);
+            Log.d(TAG, "expired time = " + expiredTime);
+            if (System.currentTimeMillis() - expiredTime < Common.ONE_DAY_IN_MILLISECONDS) { //data less than 1 days
+                Log.d(TAG, "Get from cache");
+                return getFromCache();
+            }
+        }
+        return getFromServer();
+    }
+
+    public Observable<List<Group>> getFromServer() {
+
+        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
 
-                List<Group> groups = query(EURO_LINK);
+                List<Group> groups = query(LINK);
 
                 if (groups == null) {
                     subscriber.onError(new Throwable("Cannot get infor euro teams"));
                     subscriber.onCompleted();
+                    Log.e(TAG, "Cannot get asia qualifiers");
                     return;
                 }
 
                 subscriber.onNext(groups);
                 subscriber.onCompleted();
+                Log.d(TAG, "get asia qualifier from server done");
+            }
+        }).doOnNext(new Action1<List<Group>>() {
+            @Override
+            public void call(List<Group> groups) {
+                Gson gson = new Gson();
+                String json = gson.toJson(groups, new TypeToken<List<Group>>() {
+                }.getType());
+                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Log.d(TAG, "save to cache done");
+
             }
         });
 
-        euroSubscription
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new EuroSubscriber());
+    }
+
+    public Observable<List<Group>> getFromCache() {
+        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
+            @Override
+            public void call(Subscriber<? super List<Group>> subscriber) {
+                Gson gson = new Gson();
+                String json = Common.getPrefString(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
+                if (!TextUtils.isEmpty(json)) {
+                    List<Group> groupList = gson.fromJson(json, new TypeToken<List<Group>>() {
+                    }.getType());
+                    subscriber.onNext(groupList);
+                }
+                subscriber.onCompleted();
+                Log.d(TAG, "Get asia qualifier from cache done");
+            }
+        });
     }
 
 
@@ -142,7 +197,7 @@ public class QualifierPresenter {
         this.listener = listener;
     }
 
-    class EuroSubscriber extends Subscriber<List<Group>> {
+    class QualifierSubscriber extends Subscriber<List<Group>> {
 
         @Override
         public void onCompleted() {

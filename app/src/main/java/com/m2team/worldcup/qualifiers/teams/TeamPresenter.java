@@ -1,9 +1,15 @@
 package com.m2team.worldcup.qualifiers.teams;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.m2team.worldcup.common.Common;
+import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.model.Team;
+import com.m2team.worldcup.qualifiers.group.presenter.Presenter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,90 +26,32 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class TeamPresenter {
+import static com.m2team.worldcup.common.Common.TAG;
+
+public class TeamPresenter extends Presenter {
 
     private static final String BASE_URL = "http://fifa.com";
     private OnDataCompleteListener listener;
+    private Context mContext;
+    private String detailUrl, teamId;
 
-    public TeamPresenter() {
+    public TeamPresenter(Context context) {
+        mContext = context;
     }
 
     public void setListener(OnDataCompleteListener listener) {
         this.listener = listener;
     }
 
-    public void getTeam() {
-        Observable<Team> teamObservable = Observable.create(new Observable.OnSubscribe<Team>() {
-            @Override
-            public void call(Subscriber<? super Team> subscriber) {
-
-            }
-        });
-
-        teamObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new TeamSubscriber());
-
-    }
-
-    public void getTeamDetail(String url) {
+    public void getTeamDetail(String teamId, String url) {
         url = url.replace("index", "profile-detail");
-        final String detailUrl = BASE_URL + url;
+        detailUrl = BASE_URL + url;
+        this.teamId = teamId;
         Log.d("HMWC", "url = " + detailUrl);
 
-        Observable<List<String>> teamDetailObservable = Observable.create(new Observable.OnSubscribe<List<String>>() {
-            @Override
-            public void call(Subscriber<? super List<String>> subscriber) {
-                List<String> detail = queryDetail(detailUrl);
-
-
-                if (detail == null) {
-                    subscriber.onError(new Throwable("Cannot get team detail"));
-                } else {
-                    subscriber.onNext(detail);
-                }
-                subscriber.onCompleted();
-            }
-        });
-
-        teamDetailObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<List<String>>() {
-                    @Override
-                    public void onCompleted() {
-                        listener.loadDone();
-                        Log.d("HMWC", "onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.updateTeamDetail(null);
-                    }
-
-                    @Override
-                    public void onNext(List<String> s) {
-                        listener.updateTeamDetail(s);
-                    }
-                });
+        getData(mContext, teamId, new TeamSubscriber());
     }
 
-    private Team queryTeam(String url) {
-
-        try {
-            Document document = Jsoup.connect(url).get();
-            if (document != null && document.body() != null) {
-                Element element = document.body().getElementById("article-body");
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("HMWC", "Cannot get team detail " + url);
-        }
-        return null;
-    }
 
     private List<String> queryDetail(String url) {
         List<String> infos = new ArrayList<>();
@@ -134,20 +82,58 @@ public class TeamPresenter {
         return null;
     }
 
-    class TeamSubscriber extends Subscriber<Team> {
+    @Override
+    public Observable getFromCache() {
+         return Observable.create(new Observable.OnSubscribe<List<String>>() {
+             @Override
+             public void call(Subscriber<? super List<String>> subscriber) {
+                 Gson gson = new Gson();
+                 String json = Common.getPrefString(mContext, teamId, Common.KEY_JSON_DATA);
+                 if (!TextUtils.isEmpty(json)) {
+                     List<String> s = gson.fromJson(json, new TypeToken<List<String>>() {
+                     }.getType());
+                     subscriber.onNext(s);
+                 }
+                 subscriber.onCompleted();
+                 Log.d(TAG, "Get team detail from cache done");
+             }
+         });
+    }
+
+    @Override
+    public Observable getFromServer() {
+        return Observable.create(new Observable.OnSubscribe<List<String>>() {
+            @Override
+            public void call(Subscriber<? super List<String>> subscriber) {
+                List<String> detail = queryDetail(detailUrl);
+
+
+                if (detail == null) {
+                    subscriber.onError(new Throwable("Cannot get team detail"));
+                } else {
+                    subscriber.onNext(detail);
+                }
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+
+    class TeamSubscriber extends Subscriber<List<String>> {
         @Override
         public void onCompleted() {
-
+            listener.loadDone();
+            Log.d("HMWC", "onCompleted");
         }
 
         @Override
         public void onError(Throwable e) {
-
+            listener.updateTeamDetail(null);
         }
 
         @Override
-        public void onNext(Team team) {
-
+        public void onNext(List<String> s) {
+            listener.updateTeamDetail(s);
         }
     }
 }

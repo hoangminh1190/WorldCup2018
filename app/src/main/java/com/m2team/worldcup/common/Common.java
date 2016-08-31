@@ -12,8 +12,14 @@ import java.util.ArrayList;
 
 public class Common {
 
+    public static final String ASIA_GROUPS_QUALIFIER = "asia_group";
+    public static final String EURO_GROUPS_QUALIFIER = "euro_group";
+    public static final String KEY_JSON_DATA = "data";
+    public static final String KEY_JSON_EXPIRED = "expired";
+    public static final long ONE_DAY_IN_MILLISECONDS = 24 *60 * 60 * 1000;
     public static String TAB_FONT = "fonts/Proxima Nova Alt Bold.otf";
     public static String PREF_FILE_NAME = "world_cup";
+    public static String TAG = "HMWC";
 
     public static void startActivity(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
@@ -28,28 +34,47 @@ public class Common {
 
         options = new DisplayImageOptions.Builder()
                 .cacheOnDisk(true)
-                //.bitmapConfig(Bitmap.Config.RGB_565)
                 //.displayer(new RoundedBitmapDisplayer(12))
                 .build();
     }
 
     public static String getPrefString(Context context, String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_MULTI_PROCESS);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(key, "");
+    }
+
+    public static String getPrefString(Context context, String preference, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
         return sharedPreferences.getString(key, "");
     }
 
     public static int getPrefInt(Context context, String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_MULTI_PROCESS);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(key, 0);
+    }
+
+    public static int getPrefInt(Context context, String preference, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
         return sharedPreferences.getInt(key, 0);
     }
 
     public static long getPrefLong(Context context, String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_MULTI_PROCESS);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getLong(key, 0);
+    }
+
+    public static long getPrefLong(Context context, String preference, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
         return sharedPreferences.getLong(key, 0);
     }
 
     public static boolean getPrefBoolean(Context context, String key) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_MULTI_PROCESS);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(key, false);
+    }
+
+    public static boolean getPrefBoolean(Context context, String preference, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(key, false);
     }
 
@@ -62,6 +87,23 @@ public class Common {
             editor.putString(key, value.toString());
         else if (value instanceof Boolean) {
             editor.putBoolean(key, (Boolean) value);
+        }
+        editor.apply();
+    }
+
+    public static void putPrefValue(Context context, String preference, String key, Object value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preference, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (value instanceof Integer)
+            editor.putInt(key, Integer.parseInt(value.toString()));
+        else if (value instanceof String)
+            editor.putString(key, value.toString());
+        else if (value instanceof Boolean) {
+            editor.putBoolean(key, (Boolean) value);
+        } else if (value instanceof Long) {
+            editor.putLong(key, (Long) value);
+        }else if (value instanceof Float) {
+            editor.putFloat(key, (Float) value);
         }
         editor.apply();
     }
