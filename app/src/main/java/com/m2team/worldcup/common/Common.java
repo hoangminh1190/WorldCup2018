@@ -14,9 +14,18 @@ public class Common {
 
     public static final String ASIA_GROUPS_QUALIFIER = "asia_group";
     public static final String EURO_GROUPS_QUALIFIER = "euro_group";
+    public static final String SOUTH_AMERICA_GROUPS_QUALIFIER = "south_america";
+
+    public static final String CENTRAL_AMERICA_GROUPS_QUALIFIER = "central_america";
+    public static final String OCEAN_GROUPS_QUALIFIER = "ocean";
+    public static final String AFRICA_GROUPS_QUALIFIER = "african";
+
+
     public static final String KEY_JSON_DATA = "data";
     public static final String KEY_JSON_EXPIRED = "expired";
     public static final long ONE_DAY_IN_MILLISECONDS = 24 *60 * 60 * 1000;
+    public static final long ONE_MONTH_IN_MILLISECONDS = 30 * ONE_DAY_IN_MILLISECONDS;
+
     public static String TAB_FONT = "fonts/Proxima Nova Alt Bold.otf";
     public static String PREF_FILE_NAME = "world_cup";
     public static String TAG = "HMWC";

@@ -23,61 +23,24 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.m2team.worldcup.common.Common.TAG;
 
-public class AsiaQualifierPresenter extends Presenter {
+public class SouthAmericaQualifierPresenter extends Presenter {
 
 
-    public static String LINK = "http://www.fifa.com/worldcup/preliminaries/asia/index.html";
+    public static String LINK = "http://www.fifa.com/worldcup/preliminaries/southamerica/index.html";
 
     private OnDataCompleteListener listener;
     private Context mContext;
 
-    public AsiaQualifierPresenter(Context context) {
+    public SouthAmericaQualifierPresenter(Context context) {
         mContext = context;
     }
 
     public void getData() {
-        getData(mContext, Common.ASIA_GROUPS_QUALIFIER, new QualifierSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
-    }
-
-    public Observable<List<Group>> getFromServer() {
-
-        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
-            @Override
-            public void call(Subscriber<? super List<Group>> subscriber) {
-
-                List<Group> groups = query(LINK);
-
-                if (groups == null) {
-                    subscriber.onError(new Throwable("Cannot get infor euro teams"));
-                    subscriber.onCompleted();
-                    Log.e(TAG, "Cannot get asia qualifiers");
-                    return;
-                }
-
-                subscriber.onNext(groups);
-                subscriber.onCompleted();
-                Log.d(TAG, "get asia qualifier from server done");
-            }
-        }).doOnNext(new Action1<List<Group>>() {
-            @Override
-            public void call(List<Group> groups) {
-                Gson gson = new Gson();
-                String json = gson.toJson(groups, new TypeToken<List<Group>>() {
-                }.getType());
-                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
-                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
-                Log.d(TAG, "save to cache done");
-
-            }
-        });
-
+        getData(mContext, Common.SOUTH_AMERICA_GROUPS_QUALIFIER, new QualifierSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
     }
 
     public Observable<List<Group>> getFromCache() {
@@ -85,7 +48,7 @@ public class AsiaQualifierPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
                 Gson gson = new Gson();
-                String json = Common.getPrefString(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
+                String json = Common.getPrefString(mContext, Common.SOUTH_AMERICA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
                 if (!TextUtils.isEmpty(json)) {
                     List<Group> groupList = gson.fromJson(json, new TypeToken<List<Group>>() {
                     }.getType());
@@ -96,6 +59,36 @@ public class AsiaQualifierPresenter extends Presenter {
             }
         });
     }
+
+    public Observable<List<Group>> getFromServer() {
+        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
+            @Override
+            public void call(Subscriber<? super List<Group>> subscriber) {
+
+                List<Group> groups = query(LINK);
+
+                if (groups == null) {
+                    subscriber.onError(new Throwable("Cannot get infor euro teams"));
+                } else {
+                    subscriber.onNext(groups);
+                }
+                subscriber.onCompleted();
+                Log.d(TAG, "Get euro from server done");
+            }
+        }).doOnNext(new Action1<List<Group>>() {
+            @Override
+            public void call(List<Group> groups) {
+                Gson gson = new Gson();
+                String json = gson.toJson(groups, new TypeToken<List<Group>>() {
+                }.getType());
+                Common.putPrefValue(mContext, Common.SOUTH_AMERICA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, Common.SOUTH_AMERICA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Log.d(TAG, "save to cache done");
+            }
+        });
+
+    }
+
 
     private List<Group> query(String url) {
         List<Group> groups = new ArrayList<>();

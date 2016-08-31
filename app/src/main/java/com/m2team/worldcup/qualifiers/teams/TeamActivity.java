@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
@@ -84,6 +85,8 @@ public class TeamActivity extends BaseActivity implements OnDataCompleteListener
         startAlphaAnimation(textViewTitle, 0, View.INVISIBLE);
         setSupportActionBar(mToolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         initImageLoader();
         Gson gson = new Gson();
         Team team = gson.fromJson(json, Team.class);
@@ -94,10 +97,9 @@ public class TeamActivity extends BaseActivity implements OnDataCompleteListener
 
         imageLoader.displayImage(team.getAvatar(), imageViewAvatar, options);
 
-        TeamPresenter presenter = new TeamPresenter();
+        TeamPresenter presenter = new TeamPresenter(this);
         presenter.setListener(this);
-        presenter.getTeamDetail(team.getTeamUrl());
-
+        presenter.getTeamDetail( team.getCode(), team.getTeamUrl());
 
     }
 
@@ -143,6 +145,14 @@ public class TeamActivity extends BaseActivity implements OnDataCompleteListener
     @Override
     public void loadDone() {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

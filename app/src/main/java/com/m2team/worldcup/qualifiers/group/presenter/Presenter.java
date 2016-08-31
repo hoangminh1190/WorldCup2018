@@ -21,21 +21,21 @@ import static com.m2team.worldcup.common.Common.TAG;
  */
 public abstract class Presenter {
 
-    public void getData(Context mContext, String preference, Subscriber subscriber) {
-        Observable<List<Group>> result = getDataStore(mContext, preference);
+    public void getData(Context mContext, String preference, Subscriber subscriber, long expiredPeriod) {
+        Observable result = getDataStore(mContext, preference, expiredPeriod);
         result
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(subscriber);
     }
 
-    private Observable getDataStore(Context mContext, String preference) {
+    private Observable getDataStore(Context mContext, String preference, long expiredPeriod) {
         String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
         Log.d(TAG, "json from cache " + json);
         if (!TextUtils.isEmpty(json)) {
             long expiredTime = Common.getPrefLong(mContext, preference, Common.KEY_JSON_EXPIRED);
             Log.d(TAG, "expired time = " + expiredTime);
-            if (System.currentTimeMillis() - expiredTime < Common.ONE_DAY_IN_MILLISECONDS) { //data less than 1 days
+            if (System.currentTimeMillis() - expiredTime < expiredPeriod) { //data less than 1 days
                 Log.d(TAG, "Get from cache");
                 return getFromCache();
             }

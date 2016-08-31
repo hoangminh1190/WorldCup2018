@@ -29,7 +29,9 @@ import com.m2team.worldcup.BaseActivity;
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.qualifiers.group.AsiaQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.CentralAmericaQualifierFragment;
 import com.m2team.worldcup.qualifiers.group.EuroQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.OceanQualifierFragment;
 import com.m2team.worldcup.qualifiers.group.SouthAmericaQualifierFragment;
 
 import butterknife.BindView;
@@ -48,6 +50,9 @@ public class MainActivity extends BaseActivity
     private int EURO = 0;
     private int SOUTH_AMERICA = 1;
     private int ASIA = 2;
+    private int CENTRAL_AMERICA = 3;
+    private int OCEAN = 4;
+    private int AFRICA = 5;
 
 
     private Drawable oldBackground = null;
@@ -98,7 +103,6 @@ public class MainActivity extends BaseActivity
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
-
         tabs.setViewPager(pager);
 
         tabs.setTextColor(Color.WHITE);
@@ -120,9 +124,15 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_africa) {
+            finish();
+            startActivity(MainActivity.createIntent(this, AFRICA));
+        } else if (id == R.id.nav_central_america) {
+            finish();
+            startActivity(MainActivity.createIntent(this, CENTRAL_AMERICA));
+        } else if (id == R.id.nav_ocenia) {
+            finish();
+            startActivity(MainActivity.createIntent(this, OCEAN));
         } else if (id == R.id.nav_euro) {
             finish();
             startActivity(MainActivity.createIntent(this, EURO));
@@ -172,6 +182,15 @@ public class MainActivity extends BaseActivity
                     return AsiaQualifierFragment.newInstance(position);
                 else if (type == SOUTH_AMERICA)
                     return SouthAmericaQualifierFragment.newInstance(position);
+                else if (type == CENTRAL_AMERICA)
+                    return CentralAmericaQualifierFragment.newInstance(position);
+                else if (type == OCEAN)
+                    return OceanQualifierFragment.newInstance(position);
+
+/*
+                else if (type == AFRICA)
+                    return.newInstance(position);
+*/
 
             } else if (position == 1) {
                 //return match fragment

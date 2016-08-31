@@ -49,7 +49,7 @@ public class TeamPresenter extends Presenter {
         this.teamId = teamId;
         Log.d("HMWC", "url = " + detailUrl);
 
-        getData(mContext, teamId, new TeamSubscriber());
+        getData(mContext, teamId, new TeamSubscriber(), Common.ONE_MONTH_IN_MILLISECONDS);
     }
 
 
@@ -57,9 +57,12 @@ public class TeamPresenter extends Presenter {
         List<String> infos = new ArrayList<>();
         try {
             Document document = Jsoup.connect(url).get();
-            if (document != null && document.body() != null) {
-                String teamBG = document.body().getElementsByClass("article-top-content").first().getElementsByTag("img").first().attr("src");
-                Element element = document.body().getElementById("article-body");
+            if (document == null) return null;
+
+            Element body = document.body();
+            if (body != null) {
+
+                Element element = body.getElementById("article-body");
                 if (element != null) {
                     Elements tag = element.getElementsByTag("p");
                     StringBuilder sb = new StringBuilder();
@@ -67,7 +70,14 @@ public class TeamPresenter extends Presenter {
                         sb.append(el.outerHtml());
                     }
                     infos.add(sb.toString());
-                    infos.add(teamBG);
+                    try {
+                        String teamBG = body.getElementsByClass("article-top-content").first().getElementsByTag("img").first().attr("src");
+                        infos.add(teamBG);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        Log.e("HMWC", "Cannot find image BG " + url);
+                        infos.add("");
+                    }
                     return infos;
                 }
             }
@@ -75,9 +85,6 @@ public class TeamPresenter extends Presenter {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("HMWC", "Cannot get team detail " + url);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            Log.e("HMWC", "Cannot find image BG " + url);
         }
         return null;
     }
@@ -107,13 +114,22 @@ public class TeamPresenter extends Presenter {
             public void call(Subscriber<? super List<String>> subscriber) {
                 List<String> detail = queryDetail(detailUrl);
 
-
                 if (detail == null) {
                     subscriber.onError(new Throwable("Cannot get team detail"));
                 } else {
                     subscriber.onNext(detail);
                 }
                 subscriber.onCompleted();
+            }
+        }).doOnNext(new Action1<List<String>>() {
+            @Override
+            public void call(List<String> strings) {
+                Gson gson = new Gson();
+                String json = gson.toJson(strings, new TypeToken<List<String>>() {
+                }.getType());
+                Common.putPrefValue(mContext, teamId, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, teamId, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Log.d(TAG, "save to cache done");
             }
         });
     }

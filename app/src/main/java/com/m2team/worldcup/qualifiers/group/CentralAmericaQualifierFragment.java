@@ -11,15 +11,15 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.model.Group;
+import com.m2team.worldcup.qualifiers.group.presenter.CentralAmericaQualifierPresenter;
 import com.m2team.worldcup.qualifiers.group.presenter.EuroQualifierPresenter;
-import com.m2team.worldcup.qualifiers.group.presenter.SouthAmericaQualifierPresenter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SouthAmericaQualifierFragment extends Fragment implements OnDataCompleteListener {
+public class CentralAmericaQualifierFragment extends Fragment implements OnDataCompleteListener {
 
 
     @BindView(R.id.expandableListView)
@@ -29,8 +29,8 @@ public class SouthAmericaQualifierFragment extends Fragment implements OnDataCom
 
     GroupQualifierAdapter expandableListAdapter;
 
-    public static SouthAmericaQualifierFragment newInstance(int position) {
-        SouthAmericaQualifierFragment f = new SouthAmericaQualifierFragment();
+    public static CentralAmericaQualifierFragment newInstance(int position) {
+        CentralAmericaQualifierFragment f = new CentralAmericaQualifierFragment();
         Bundle b = new Bundle();
         f.setArguments(b);
         return f;
@@ -40,7 +40,7 @@ public class SouthAmericaQualifierFragment extends Fragment implements OnDataCom
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SouthAmericaQualifierPresenter presenter = new SouthAmericaQualifierPresenter(getActivity());
+        CentralAmericaQualifierPresenter presenter = new CentralAmericaQualifierPresenter(getActivity());
         presenter.setOnDataComplete(this);
         presenter.getData();
     }

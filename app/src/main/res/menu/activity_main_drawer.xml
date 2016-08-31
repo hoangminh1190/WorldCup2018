@@ -2,14 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+
         <item
             android:id="@+id/nav_euro"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Euro Qualifier" />
+            android:title="Europe" />
         <item
             android:id="@+id/nav_sa"
             android:icon="@drawable/ic_menu_slideshow"
@@ -18,6 +15,18 @@
             android:id="@+id/nav_asia"
             android:icon="@drawable/ic_menu_manage"
             android:title="Asia" />
+        <item
+            android:id="@+id/nav_central_america"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="North, Central America &amp; Caribbean" />
+        <item
+            android:id="@+id/nav_africa"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Africa" />
+        <item
+            android:id="@+id/nav_ocenia"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Oceania" />
     </group>
 
     <item android:title="Communicate">

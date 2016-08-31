@@ -47,28 +47,10 @@ public class EuroQualifierPresenter extends Presenter {
     }
 
     public void getData() {
-        Observable<List<Group>> result = getDataStore();
-        result
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new EuroSubscriber());
+        getData(mContext, Common.EURO_GROUPS_QUALIFIER, new EuroSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
     }
 
-    Observable<List<Group>> getDataStore() {
-        String json = Common.getPrefString(mContext, Common.EURO_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
-        Log.d(TAG, "json from cache " + json);
-        if (!TextUtils.isEmpty(json)) {
-            long expiredTime = Common.getPrefLong(mContext, Common.EURO_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED);
-            Log.d(TAG, "expired time = " + expiredTime);
-            if (System.currentTimeMillis() - expiredTime < Common.ONE_DAY_IN_MILLISECONDS) { //data less than 1 days
-                Log.d(TAG, "Get from cache");
-                return getFromCache();
-            }
-        }
-        return getFromServer();
-    }
-
-    protected Observable<List<Group>> getFromCache() {
+    public Observable<List<Group>> getFromCache() {
         return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
@@ -85,7 +67,7 @@ public class EuroQualifierPresenter extends Presenter {
         });
     }
 
-    private Observable<List<Group>> getFromServer() {
+    public Observable<List<Group>> getFromServer() {
         return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
