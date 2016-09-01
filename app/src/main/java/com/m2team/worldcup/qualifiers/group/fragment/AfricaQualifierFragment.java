@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.group;
+package com.m2team.worldcup.qualifiers.group.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,15 +11,16 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.model.Group;
-import com.m2team.worldcup.qualifiers.group.presenter.CentralAmericaQualifierPresenter;
-import com.m2team.worldcup.qualifiers.group.presenter.EuroQualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.GroupQualifierAdapter;
+import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
+import com.m2team.worldcup.qualifiers.group.presenter.AfricaQualifierPresenter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CentralAmericaQualifierFragment extends Fragment implements OnDataCompleteListener {
+public class AfricaQualifierFragment extends Fragment implements OnDataCompleteListener {
 
 
     @BindView(R.id.expandableListView)
@@ -29,8 +30,8 @@ public class CentralAmericaQualifierFragment extends Fragment implements OnDataC
 
     GroupQualifierAdapter expandableListAdapter;
 
-    public static CentralAmericaQualifierFragment newInstance(int position) {
-        CentralAmericaQualifierFragment f = new CentralAmericaQualifierFragment();
+    public static AfricaQualifierFragment newInstance(int position) {
+        AfricaQualifierFragment f = new AfricaQualifierFragment();
         Bundle b = new Bundle();
         f.setArguments(b);
         return f;
@@ -40,7 +41,7 @@ public class CentralAmericaQualifierFragment extends Fragment implements OnDataC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        CentralAmericaQualifierPresenter presenter = new CentralAmericaQualifierPresenter(getActivity());
+        AfricaQualifierPresenter presenter = new AfricaQualifierPresenter(getActivity());
         presenter.setOnDataComplete(this);
         presenter.getData();
     }
@@ -83,6 +84,9 @@ public class CentralAmericaQualifierFragment extends Fragment implements OnDataC
             Snackbar.make(expandableListView, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
             expandableListAdapter.setGroups(groups);
+            for (int i = 0; i < groups.size(); i++) {
+                expandableListView.expandGroup(i, false);
+            }
         }
     }
 

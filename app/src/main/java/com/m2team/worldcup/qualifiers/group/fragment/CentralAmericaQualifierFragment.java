@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.group;
+package com.m2team.worldcup.qualifiers.group.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,15 +11,17 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.model.Group;
-import com.m2team.worldcup.qualifiers.group.presenter.AsiaQualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.GroupQualifierAdapter;
+import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
+import com.m2team.worldcup.qualifiers.group.presenter.CentralAmericaQualifierPresenter;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AsiaQualifierFragment extends Fragment implements OnDataCompleteListener {
+public class CentralAmericaQualifierFragment extends Fragment implements OnDataCompleteListener {
 
-    private static final String ARG_POSITION = "position";
 
     @BindView(R.id.expandableListView)
     ExpandableListView expandableListView;
@@ -27,29 +29,27 @@ public class AsiaQualifierFragment extends Fragment implements OnDataCompleteLis
     ProgressBar progressBar;
 
     GroupQualifierAdapter expandableListAdapter;
-    private int position;
 
-    public static AsiaQualifierFragment newInstance(int position) {
-        AsiaQualifierFragment f = new AsiaQualifierFragment();
+    public static CentralAmericaQualifierFragment newInstance(int position) {
+        CentralAmericaQualifierFragment f = new CentralAmericaQualifierFragment();
         Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
         f.setArguments(b);
         return f;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AsiaQualifierPresenter presenter = new AsiaQualifierPresenter(getActivity());
+        CentralAmericaQualifierPresenter presenter = new CentralAmericaQualifierPresenter(getActivity());
         presenter.setOnDataComplete(this);
         presenter.getData();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_group, null);
+
         ButterKnife.bind(this, view);
 
         expandableListAdapter = new GroupQualifierAdapter(getActivity());
@@ -77,12 +77,16 @@ public class AsiaQualifierFragment extends Fragment implements OnDataCompleteLis
         return view;
     }
 
+
     @Override
     public void updateView(List<Group> groups) {
         if (groups == null) {
             Snackbar.make(expandableListView, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
             expandableListAdapter.setGroups(groups);
+            for (int i = 0; i < groups.size(); i++) {
+                expandableListView.expandGroup(i, false);
+            }
         }
     }
 

@@ -55,7 +55,7 @@ public class SouthAmericaQualifierPresenter extends Presenter {
                     subscriber.onNext(groupList);
                 }
                 subscriber.onCompleted();
-                Log.d(TAG, "Get asia qualifier from cache done");
+                Log.d(TAG, "Get sa qualifier from cache done");
             }
         });
     }
@@ -68,12 +68,12 @@ public class SouthAmericaQualifierPresenter extends Presenter {
                 List<Group> groups = query(LINK);
 
                 if (groups == null) {
-                    subscriber.onError(new Throwable("Cannot get infor euro teams"));
+                    subscriber.onError(new Throwable("Cannot get infor sa teams"));
                 } else {
                     subscriber.onNext(groups);
                 }
                 subscriber.onCompleted();
-                Log.d(TAG, "Get euro from server done");
+                Log.d(TAG, "Get sa from server done");
             }
         }).doOnNext(new Action1<List<Group>>() {
             @Override

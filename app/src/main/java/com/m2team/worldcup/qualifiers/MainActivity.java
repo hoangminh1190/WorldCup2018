@@ -28,11 +28,18 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.m2team.worldcup.BaseActivity;
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.common.Common;
-import com.m2team.worldcup.qualifiers.group.AsiaQualifierFragment;
-import com.m2team.worldcup.qualifiers.group.CentralAmericaQualifierFragment;
-import com.m2team.worldcup.qualifiers.group.EuroQualifierFragment;
-import com.m2team.worldcup.qualifiers.group.OceanQualifierFragment;
-import com.m2team.worldcup.qualifiers.group.SouthAmericaQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.AfricaQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.AsiaQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.CentralAmericaQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.EuroQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.OceanQualifierFragment;
+import com.m2team.worldcup.qualifiers.group.fragment.SouthAmericaQualifierFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.AfricaMatchesFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.AsiaMatchesFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.CentralAmericaMatchesFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.EuroMatchesFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.OceniaMatchesFragment;
+import com.m2team.worldcup.qualifiers.matches.presenter.SouthAmericaMatchesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -186,15 +193,22 @@ public class MainActivity extends BaseActivity
                     return CentralAmericaQualifierFragment.newInstance(position);
                 else if (type == OCEAN)
                     return OceanQualifierFragment.newInstance(position);
-
-/*
                 else if (type == AFRICA)
-                    return.newInstance(position);
-*/
+                    return AfricaQualifierFragment.newInstance(position);
 
             } else if (position == 1) {
-                //return match fragment
-                return SouthAmericaQualifierFragment.newInstance(position);
+                if (type == EURO)
+                    return EuroMatchesFragment.newInstance(position);
+                else if (type == ASIA)
+                    return AsiaMatchesFragment.newInstance(position);
+                else if (type == SOUTH_AMERICA)
+                    return SouthAmericaMatchesFragment.newInstance(position);
+                else if (type == CENTRAL_AMERICA)
+                    return CentralAmericaMatchesFragment.newInstance(position);
+                else if (type == OCEAN)
+                    return OceniaMatchesFragment.newInstance(position);
+                else if (type == AFRICA)
+                    return AfricaMatchesFragment.newInstance(position);
             } else if (position == 2) {
                 //return team fragment
                 return SouthAmericaQualifierFragment.newInstance(position);

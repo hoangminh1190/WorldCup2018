@@ -1,7 +1,6 @@
-package com.m2team.worldcup.qualifiers.group;
+package com.m2team.worldcup.qualifiers.group.fragment;
 
 import android.os.Bundle;
-
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,14 +11,16 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.model.Group;
-import com.m2team.worldcup.qualifiers.group.presenter.EuroQualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.GroupQualifierAdapter;
+import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
+import com.m2team.worldcup.qualifiers.group.presenter.SouthAmericaQualifierPresenter;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EuroQualifierFragment extends Fragment implements OnDataCompleteListener {
+public class SouthAmericaQualifierFragment extends Fragment implements OnDataCompleteListener {
 
 
     @BindView(R.id.expandableListView)
@@ -29,8 +30,8 @@ public class EuroQualifierFragment extends Fragment implements OnDataCompleteLis
 
     GroupQualifierAdapter expandableListAdapter;
 
-    public static EuroQualifierFragment newInstance(int position) {
-        EuroQualifierFragment f = new EuroQualifierFragment();
+    public static SouthAmericaQualifierFragment newInstance(int position) {
+        SouthAmericaQualifierFragment f = new SouthAmericaQualifierFragment();
         Bundle b = new Bundle();
         f.setArguments(b);
         return f;
@@ -40,7 +41,7 @@ public class EuroQualifierFragment extends Fragment implements OnDataCompleteLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EuroQualifierPresenter presenter = new EuroQualifierPresenter(getActivity());
+        SouthAmericaQualifierPresenter presenter = new SouthAmericaQualifierPresenter(getActivity());
         presenter.setOnDataComplete(this);
         presenter.getData();
     }
@@ -83,6 +84,9 @@ public class EuroQualifierFragment extends Fragment implements OnDataCompleteLis
             Snackbar.make(expandableListView, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
             expandableListAdapter.setGroups(groups);
+            for (int i = 0; i < groups.size(); i++) {
+                expandableListView.expandGroup(i, false);
+            }
         }
     }
 

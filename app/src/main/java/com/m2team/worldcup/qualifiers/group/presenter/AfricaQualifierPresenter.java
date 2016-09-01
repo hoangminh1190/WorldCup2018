@@ -10,7 +10,6 @@ import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.model.Team;
 import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
-import com.nostra13.universalimageloader.utils.L;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -23,65 +22,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
-import rx.Scheduler;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
 import static com.m2team.worldcup.common.Common.TAG;
 
-public class EuroQualifierPresenter extends Presenter {
+public class AfricaQualifierPresenter extends Presenter {
 
 
-    public static String EURO_LINK = "http://www.fifa.com/worldcup/preliminaries/europe/index.html";
+    public static String LINK = "http://www.fifa.com/worldcup/preliminaries/africa/index.html";
 
     private OnDataCompleteListener listener;
     private Context mContext;
 
-    public EuroQualifierPresenter(Context context) {
+    public AfricaQualifierPresenter(Context context) {
         mContext = context;
     }
 
     public void getData() {
-        getData(mContext, Common.EURO_GROUPS_QUALIFIER, new EuroSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
-    }
-
-    public Observable<List<Group>> getFromCache() {
-        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
-            @Override
-            public void call(Subscriber<? super List<Group>> subscriber) {
-                Gson gson = new Gson();
-                String json = Common.getPrefString(mContext, Common.EURO_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
-                if (!TextUtils.isEmpty(json)) {
-                    List<Group> groupList = gson.fromJson(json, new TypeToken<List<Group>>() {
-                    }.getType());
-                    subscriber.onNext(groupList);
-                }
-                subscriber.onCompleted();
-                Log.d(TAG, "Get asia qualifier from cache done");
-            }
-        });
+        getData(mContext, Common.AFRICA_GROUPS_QUALIFIER, new QualifierSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
     }
 
     public Observable<List<Group>> getFromServer() {
+
         return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
 
-                List<Group> groups = query(EURO_LINK);
+                List<Group> groups = query(LINK);
 
                 if (groups == null) {
-                    subscriber.onError(new Throwable("Cannot get infor euro teams"));
-
-                } else {
-                    subscriber.onNext(groups);
+                    subscriber.onError(new Throwable("Cannot get infor africa teams"));
+                    subscriber.onCompleted();
+                    Log.e(TAG, "Cannot get africa qualifiers");
+                    return;
                 }
+
+                subscriber.onNext(groups);
                 subscriber.onCompleted();
-                Log.d(TAG, "Get euro from server done");
+                Log.d(TAG, "get africa qualifier from server done");
             }
         }).doOnNext(new Action1<List<Group>>() {
             @Override
@@ -89,14 +68,31 @@ public class EuroQualifierPresenter extends Presenter {
                 Gson gson = new Gson();
                 String json = gson.toJson(groups, new TypeToken<List<Group>>() {
                 }.getType());
-                Common.putPrefValue(mContext, Common.EURO_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
-                Common.putPrefValue(mContext, Common.EURO_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Common.putPrefValue(mContext, Common.AFRICA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, Common.AFRICA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
                 Log.d(TAG, "save to cache done");
+
             }
         });
 
     }
 
+    public Observable<List<Group>> getFromCache() {
+        return Observable.create(new Observable.OnSubscribe<List<Group>>() {
+            @Override
+            public void call(Subscriber<? super List<Group>> subscriber) {
+                Gson gson = new Gson();
+                String json = Common.getPrefString(mContext, Common.AFRICA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
+                if (!TextUtils.isEmpty(json)) {
+                    List<Group> groupList = gson.fromJson(json, new TypeToken<List<Group>>() {
+                    }.getType());
+                    subscriber.onNext(groupList);
+                }
+                subscriber.onCompleted();
+                Log.d(TAG, "Get africa qualifier from cache done");
+            }
+        });
+    }
 
     private List<Group> query(String url) {
         List<Group> groups = new ArrayList<>();
@@ -179,7 +175,7 @@ public class EuroQualifierPresenter extends Presenter {
         this.listener = listener;
     }
 
-    class EuroSubscriber extends Subscriber<List<Group>> {
+    class QualifierSubscriber extends Subscriber<List<Group>> {
 
         @Override
         public void onCompleted() {

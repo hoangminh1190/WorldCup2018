@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 
@@ -12,18 +14,24 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.m2team.worldcup.common.Common.TAG;
 
-/**
- * Created by Tom on 8/30/2016.
- */
 public abstract class Presenter {
 
-    public void getData(Context mContext, String preference, Subscriber subscriber, long expiredPeriod) {
+    public void getData(final Context mContext, String preference, final Subscriber subscriber, long expiredPeriod) {
         Observable result = getDataStore(mContext, preference, expiredPeriod);
-        result
+        result.doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.e(TAG, "onError -> try to get from cache");
+                getFromCache().observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(subscriber);
+            }
+        })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(subscriber);
