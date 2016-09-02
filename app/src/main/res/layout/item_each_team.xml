@@ -1,27 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:orientation="horizontal">
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp"
+    android:layout_margin="4dp"
+    >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/img_flag"
-        />
-
-    <View
-        android:layout_width="8dp"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/tv_team"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:layout_gravity="center_vertical"
-        android:textStyle="bold" />
+        android:layout_height="60dp"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_flag"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:civ_border_color="#666666"
+            app:civ_border_width="2dp" />
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_team"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

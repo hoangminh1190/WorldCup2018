@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifierAdapter.ViewHolder> {
@@ -35,7 +36,7 @@ public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifi
         @BindView(R.id.tv_team)
         TextView tv_name;
         @BindView(R.id.img_flag)
-        ImageView imgFlag;
+        CircleImageView imgFlag;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -75,9 +76,17 @@ public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Team team = teamList.get(position);
+        final Team team = teamList.get(position);
         holder.tv_name.setText(team.getName());
         imageLoader.displayImage(team.getAvatar(), holder.imgFlag);
+
+        holder.tv_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String json = gson.toJson(team);
+                context.startActivity(TeamDetailActivity.createIntent(context, json));
+            }
+        });
     }
 
     @Override

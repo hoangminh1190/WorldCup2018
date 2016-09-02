@@ -8,6 +8,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
+
+import com.m2team.worldcup.common.Applog;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.m2team.worldcup.BaseActivity;
 import com.m2team.worldcup.R;
+import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Team;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,10 +51,10 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
 
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
-    private static final int ALPHA_ANIMATIONS_DURATION              = 200;
-    private boolean mIsTheTitleVisible          = false;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION = 200;
+    private boolean mIsTheTitleVisible = false;
     private boolean mIsTheTitleContainerVisible = true;
 
 
@@ -90,13 +94,13 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
 
         textViewTitle.setText(team.getName());
         tv_profile.setText(team.getName());
-        tv_profile_desc.setText("M2 Team");
+        tv_profile_desc.setText("");
 
         imageLoader.displayImage(team.getAvatar(), imageViewAvatar, options);
 
         TeamDetailPresenter presenter = new TeamDetailPresenter(this);
         presenter.setListener(this);
-        presenter.getTeamDetail( team.getCode(), team.getTeamUrl());
+        presenter.getTeamDetail(team.getName(), team.getTeamUrl());
 
     }
 
@@ -124,12 +128,10 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
 
     @Override
     public void updateTeamDetail(List<String> detail) {
-        Log.d("HMWC", "haizz data= " + detail);
+        Applog.d(Common.TAG, "haizz data= " + detail);
         if (detail == null) {
             Snackbar.make(textViewDetail, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
-            Log.d("HMWC", "update text " + detail.get(0));
-            Log.d("HMWC", "update img  " + detail.get(1));
             if (!TextUtils.isEmpty(detail.get(0))) {
                 textViewDetail.setText(Html.fromHtml(detail.get(0)));
             }
@@ -164,7 +166,7 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
     private void handleToolbarTitleVisibility(float percentage) {
         if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
 
-            if(!mIsTheTitleVisible) {
+            if (!mIsTheTitleVisible) {
                 startAlphaAnimation(textViewTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
                 mIsTheTitleVisible = true;
             }
@@ -180,7 +182,7 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
 
     private void handleAlphaOnTitle(float percentage) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
-            if(mIsTheTitleContainerVisible) {
+            if (mIsTheTitleContainerVisible) {
                 startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
                 mIsTheTitleContainerVisible = false;
             }
@@ -194,7 +196,7 @@ public class TeamDetailActivity extends BaseActivity implements OnDataCompleteLi
         }
     }
 
-    public static void startAlphaAnimation (View v, long duration, int visibility) {
+    public static void startAlphaAnimation(View v, long duration, int visibility) {
         AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
                 ? new AlphaAnimation(0f, 1f)
                 : new AlphaAnimation(1f, 0f);

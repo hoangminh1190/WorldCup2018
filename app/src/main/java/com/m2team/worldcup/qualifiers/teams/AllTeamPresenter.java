@@ -81,7 +81,7 @@ public class AllTeamPresenter {
                     Team team = new Team();
                     team.setAvatar(allFlags.get(i).attr("src"));
                     team.setName(allNames.get(i).text());
-                    team.setTeamUrl(BASE_URL + allTeamLinks.get(i).attr("href"));
+                    team.setTeamUrl(allTeamLinks.get(i).attr("href"));
                     infos.add(team);
                 }
 
@@ -98,13 +98,13 @@ public class AllTeamPresenter {
     }
 
     public Observable getFromCache(final String preference) {
-         return Observable.create(new Observable.OnSubscribe<List<String>>() {
+         return Observable.create(new Observable.OnSubscribe<List<Team>>() {
              @Override
-             public void call(Subscriber<? super List<String>> subscriber) {
+             public void call(Subscriber<? super List<Team>> subscriber) {
                  Gson gson = new Gson();
                  String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
                  if (!TextUtils.isEmpty(json)) {
-                     List<String> s = gson.fromJson(json, new TypeToken<List<String>>() {
+                     List<Team> s = gson.fromJson(json, new TypeToken<List<Team>>() {
                      }.getType());
                      subscriber.onNext(s);
                  }

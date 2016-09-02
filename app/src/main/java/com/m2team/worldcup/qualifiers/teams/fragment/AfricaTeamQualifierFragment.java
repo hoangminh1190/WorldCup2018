@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.teams;
+package com.m2team.worldcup.qualifiers.teams.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -13,13 +13,16 @@ import android.widget.ProgressBar;
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Team;
+import com.m2team.worldcup.qualifiers.teams.AllTeamPresenter;
+import com.m2team.worldcup.qualifiers.teams.AllTeamQualifierAdapter;
+import com.m2team.worldcup.qualifiers.teams.OnAllTeamsDataCompleteListener;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TeamQualifierFragment extends Fragment implements OnAllTeamsDataCompleteListener {
+public class AfricaTeamQualifierFragment extends Fragment implements OnAllTeamsDataCompleteListener {
 
 
     @BindView(R.id.recyclerView)
@@ -29,8 +32,8 @@ public class TeamQualifierFragment extends Fragment implements OnAllTeamsDataCom
 
     AllTeamQualifierAdapter adapter;
 
-    public static TeamQualifierFragment newInstance(int position) {
-        TeamQualifierFragment f = new TeamQualifierFragment();
+    public static AfricaTeamQualifierFragment newInstance(int position) {
+        AfricaTeamQualifierFragment f = new AfricaTeamQualifierFragment();
         Bundle b = new Bundle();
         f.setArguments(b);
         return f;
@@ -40,14 +43,14 @@ public class TeamQualifierFragment extends Fragment implements OnAllTeamsDataCom
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AllTeamPresenter presenter = new AllTeamPresenter(getActivity(), Common.EURO_QUALIFIER_LINK);
+        AllTeamPresenter presenter = new AllTeamPresenter(getActivity(), Common.AFRICA_QUALIFIER_LINK);
         presenter.setListener(this);
-        presenter.getData(Common.EURO_TEAMS_QUALIFIER, Common.ONE_MONTH_IN_MILLISECONDS);
+        presenter.getData(Common.AFRICA_TEAMS_QUALIFIER, Common.ONE_MONTH_IN_MILLISECONDS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_match, null);
+        View view = inflater.inflate(R.layout.fragment_team, null);
 
         ButterKnife.bind(this, view);
 

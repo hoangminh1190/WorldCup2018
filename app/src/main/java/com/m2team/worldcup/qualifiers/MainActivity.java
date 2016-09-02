@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +41,12 @@ import com.m2team.worldcup.qualifiers.matches.presenter.CentralAmericaMatchesFra
 import com.m2team.worldcup.qualifiers.matches.presenter.EuroMatchesFragment;
 import com.m2team.worldcup.qualifiers.matches.presenter.OceniaMatchesFragment;
 import com.m2team.worldcup.qualifiers.matches.presenter.SouthAmericaMatchesFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.AfricaTeamQualifierFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.AsiaTeamQualifierFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.CentralAmericaTeamQualifierFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.EuroTeamQualifierFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.OceniaTeamQualifierFragment;
+import com.m2team.worldcup.qualifiers.teams.fragment.SouthAmericaTeamQualifierFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -129,7 +136,6 @@ public class MainActivity extends BaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_africa) {
             finish();
@@ -182,6 +188,7 @@ public class MainActivity extends BaseActivity
 
         @Override
         public Fragment getItem(int position) {
+            Log.d(Common.TAG, "==========getItem " + position + " type " + type);
             if (position == 0) {
                 if (type == EURO)
                     return EuroQualifierFragment.newInstance(position);
@@ -210,8 +217,19 @@ public class MainActivity extends BaseActivity
                 else if (type == AFRICA)
                     return AfricaMatchesFragment.newInstance(position);
             } else if (position == 2) {
-                //return team fragment
-                return SouthAmericaQualifierFragment.newInstance(position);
+                if (type == EURO)
+                    return EuroTeamQualifierFragment.newInstance(position);
+                else if (type == ASIA)
+                    return AsiaTeamQualifierFragment.newInstance(position);
+                else if (type == SOUTH_AMERICA)
+                    return SouthAmericaTeamQualifierFragment.newInstance(position);
+                else if (type == CENTRAL_AMERICA)
+                    return CentralAmericaTeamQualifierFragment.newInstance(position);
+                else if (type == OCEAN)
+                    return OceniaTeamQualifierFragment.newInstance(position);
+                else if (type == AFRICA)
+                    return AfricaTeamQualifierFragment.newInstance(position);
+
             }
             return null;
         }

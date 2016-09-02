@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Common {
 
+    //------------JSON FOR GROUPS----------------
     public static final String ASIA_GROUPS_QUALIFIER = "asia_group";
     public static final String EURO_GROUPS_QUALIFIER = "euro_group";
     public static final String SOUTH_AMERICA_GROUPS_QUALIFIER = "south_america";
@@ -19,6 +20,7 @@ public class Common {
     public static final String OCEAN_GROUPS_QUALIFIER = "ocean";
     public static final String AFRICA_GROUPS_QUALIFIER = "african";
 
+    //----------JSON FOR MATCHES----------------
     public static final String EURO_MATCHES_QUALIFIER = "EURO_MATCHES_QUALIFIER";
     public static final String ASIA_MATCHES_QUALIFIER = "ASIA_MATCHES_QUALIFIER";
     public static final String SOUT_AMERICA_MATCHES_QUALIFIER = "SOUT_AMERICA_MATCHES_QUALIFIER";
@@ -28,15 +30,19 @@ public class Common {
 
     //-------JSON KEY FOR ALL TEAMS--------------
     public static final String EURO_TEAMS_QUALIFIER = "EURO_TEAMS_QUALIFIER";
+    public static final String AFRICA_TEAMS_QUALIFIER = "AFRICA_TEAMS_QUALIFIER";
+    public static final String ASIA_TEAMS_QUALIFIER = "ASIA_TEAMS_QUALIFIER";
+    public static final String CENTRAL_AMERICA_TEAMS_QUALIFIER = "CENTRAL_AMERICA_TEAMS_QUALIFIER";
+    public static final String OCENIA_TEAMS_QUALIFIER = "OCENIA_TEAMS_QUALIFIER";
+    public static final String SOUTH_AMERICA_TEAMS_QUALIFIER = "SOUTH_AMERICA_TEAMS_QUALIFIER";
 
+    //----------LINK----------------
     public static final String ASIA_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/asia/index.html";
     public static String AFRICA_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/africa/index.html";
     public static String EURO_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/europe/index.html";
     public static String OCENIA_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/oceania/index.html";
     public static String SA_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/southamerica/index.html";
     public static String CENTRAL_QUALIFIER_LINK = "http://www.fifa.com/worldcup/preliminaries/nccamerica/index.html";
-
-    public static String EURO_TEAMS_LINK = "http://www.fifa.com/worldcup/preliminaries/europe/index.html";
 
     public static final String KEY_JSON_DATA = "data";
     public static final String KEY_JSON_EXPIRED = "expired";
