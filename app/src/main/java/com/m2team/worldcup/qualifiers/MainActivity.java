@@ -24,6 +24,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.m2team.worldcup.BaseActivity;
@@ -47,6 +49,7 @@ import com.m2team.worldcup.qualifiers.teams.fragment.CentralAmericaTeamQualifier
 import com.m2team.worldcup.qualifiers.teams.fragment.EuroTeamQualifierFragment;
 import com.m2team.worldcup.qualifiers.teams.fragment.OceniaTeamQualifierFragment;
 import com.m2team.worldcup.qualifiers.teams.fragment.SouthAmericaTeamQualifierFragment;
+import com.m2team.worldcup.stadiums.HostedCountryActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,6 +109,14 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        TextView tv_hosted_contry = (TextView) headerView.findViewById(R.id.tv_hosted_contry);
+        tv_hosted_contry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), HostedCountryActivity.class));
+            }
+        });
     }
 
     private void initTabs() {

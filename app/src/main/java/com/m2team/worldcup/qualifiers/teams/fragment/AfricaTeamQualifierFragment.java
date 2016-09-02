@@ -66,7 +66,7 @@ public class AfricaTeamQualifierFragment extends Fragment implements OnAllTeamsD
         if (teams == null) {
             Snackbar.make(recyclerView, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
-            adapter.setTeams(teams);
+            adapter.setData(teams);
 
         }
     }

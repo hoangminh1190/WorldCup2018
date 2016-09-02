@@ -20,12 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home.MyActivity"/>
+        <activity android:name=".home.MyActivity" />
         <activity
             android:name=".qualifiers.teams.TeamDetailActivity"
-            android:theme="@style/CoordinateTheme">
-
-        </activity>
+            android:theme="@style/CoordinateTheme"/>
+        <activity
+            android:name=".stadiums.HostedCountryActivity"
+            android:label="@string/title_activity_hosted_country"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".stadiums.StadiumDetailActivity"
+            android:theme="@style/CoordinateTheme"/>
     </application>
 
 </manifest>

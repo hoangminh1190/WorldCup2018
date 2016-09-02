@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.teams;
+package com.m2team.worldcup.stadiums;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.m2team.worldcup.R;
-import com.m2team.worldcup.model.Team;
+import com.m2team.worldcup.model.Stadium;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -20,13 +20,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifierAdapter.ViewHolder> {
+public class StadiumQualifierAdapter extends RecyclerView.Adapter<StadiumQualifierAdapter.ViewHolder> {
 
     private Context context;
-    private List<Team> teamList;
+    private List<Stadium> dataList;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Gson gson;
@@ -35,8 +34,8 @@ public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifi
 
         @BindView(R.id.tv_team)
         TextView tv_name;
-        @BindView(R.id.img_flag)
-        CircleImageView imgFlag;
+        @BindView(R.id.img_background)
+        ImageView img_background;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -44,16 +43,16 @@ public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifi
         }
     }
 
-    public AllTeamQualifierAdapter(Context context) {
+    public StadiumQualifierAdapter(Context context) {
         this.context = context;
-        teamList = new ArrayList<>();
+        dataList = new ArrayList<>();
         gson = new Gson();
         initImageLoader();
 
     }
 
-    public void setData(List<Team> teams) {
-        this.teamList = teams;
+    public void setData(List<Stadium> list) {
+        this.dataList = list;
         notifyDataSetChanged();
     }
 
@@ -71,26 +70,31 @@ public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_each_team, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_each_stadium, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Team team = teamList.get(position);
-        holder.tv_name.setText(team.getName());
-        imageLoader.displayImage(team.getAvatar(), holder.imgFlag);
+        final Stadium stadium = dataList.get(position);
+        holder.tv_name.setText(stadium.name);
+        imageLoader.displayImage(stadium.background, holder.img_background);
 
         holder.tv_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String json = gson.toJson(team);
-                context.startActivity(TeamDetailActivity.createIntent(context, json));
+                context.startActivity(StadiumDetailActivity.createIntent(context, stadium.link, stadium.name));
+            }
+        });
+        holder.img_background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(StadiumDetailActivity.createIntent(context, stadium.link, stadium.name));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return teamList.size();
+        return dataList.size();
     }
 }
