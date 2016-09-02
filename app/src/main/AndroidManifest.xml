@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".home.MyActivity"/>
         <activity
-            android:name=".qualifiers.teams.TeamActivity"
+            android:name=".qualifiers.teams.TeamDetailActivity"
             android:theme="@style/CoordinateTheme">
 
         </activity>

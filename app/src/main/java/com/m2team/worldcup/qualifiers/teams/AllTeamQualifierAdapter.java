@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.matches.presenter;
+package com.m2team.worldcup.qualifiers.teams;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.m2team.worldcup.R;
-import com.m2team.worldcup.model.Match;
+import com.m2team.worldcup.model.Team;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -22,30 +22,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MatchQualifierAdapter extends RecyclerView.Adapter<MatchQualifierAdapter.ViewHolder> {
+public class AllTeamQualifierAdapter extends RecyclerView.Adapter<AllTeamQualifierAdapter.ViewHolder> {
 
     private Context context;
-    private List<Match> matches;
+    private List<Team> teamList;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private Gson gson;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_away_name)
-        TextView tv_away_name;
-        @BindView(R.id.tv_day)
-        TextView tv_day;
-        @BindView(R.id.tv_group)
-        TextView tv_group;
-        @BindView(R.id.tv_home_name)
-        TextView tv_home_name;
-        @BindView(R.id.tv_time)
-        TextView tv_time;
-        @BindView(R.id.img_away_flag)
-        ImageView imgAwayFlag;
-        @BindView(R.id.img_home_flag)
-        ImageView imgHomeFlag;
+        @BindView(R.id.tv_team)
+        TextView tv_name;
+        @BindView(R.id.img_flag)
+        ImageView imgFlag;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -53,16 +43,16 @@ public class MatchQualifierAdapter extends RecyclerView.Adapter<MatchQualifierAd
         }
     }
 
-    public MatchQualifierAdapter(Context context) {
+    public AllTeamQualifierAdapter(Context context) {
         this.context = context;
-        matches = new ArrayList<>();
+        teamList = new ArrayList<>();
         gson = new Gson();
         initImageLoader();
 
     }
 
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
+    public void setTeams(List<Team> teams) {
+        this.teamList = teams;
         notifyDataSetChanged();
     }
 
@@ -80,23 +70,18 @@ public class MatchQualifierAdapter extends RecyclerView.Adapter<MatchQualifierAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_each_match, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_each_team, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Match match = matches.get(position);
-        holder.tv_away_name.setText(match.teamA.getName());
-        holder.tv_home_name.setText(match.teamH.getName());
-        holder.tv_day.setText(match.day);
-        holder.tv_group.setText(match.group);
-        holder.tv_time.setText(match.time);
-        imageLoader.displayImage(match.teamH.getAvatar(), holder.imgHomeFlag);
-        imageLoader.displayImage(match.teamA.getAvatar(), holder.imgAwayFlag);
+        Team team = teamList.get(position);
+        holder.tv_name.setText(team.getName());
+        imageLoader.displayImage(team.getAvatar(), holder.imgFlag);
     }
 
     @Override
     public int getItemCount() {
-        return matches.size();
+        return teamList.size();
     }
 }

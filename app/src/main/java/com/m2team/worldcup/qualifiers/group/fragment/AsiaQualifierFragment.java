@@ -10,10 +10,11 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
+import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.qualifiers.group.GroupQualifierAdapter;
 import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
-import com.m2team.worldcup.qualifiers.group.presenter.AsiaQualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.presenter.QualifierPresenter;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,9 +43,9 @@ public class AsiaQualifierFragment extends Fragment implements OnDataCompleteLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AsiaQualifierPresenter presenter = new AsiaQualifierPresenter(getActivity());
+        QualifierPresenter presenter = new QualifierPresenter(getActivity(), Common.ASIA_QUALIFIER_LINK);
         presenter.setOnDataComplete(this);
-        presenter.getData();
+        presenter.getData(Common.ASIA_GROUPS_QUALIFIER, Common.ONE_DAY_IN_MILLISECONDS);
     }
 
 

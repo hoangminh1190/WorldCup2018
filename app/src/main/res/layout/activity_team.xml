@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.m2team.worldcup.qualifiers.teams.TeamActivity">
+    tools:context=".qualifiers.teams.TeamDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

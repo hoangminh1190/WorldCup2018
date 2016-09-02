@@ -1,28 +1,22 @@
 package com.m2team.worldcup.qualifiers.group;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.m2team.worldcup.R;
-import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.model.Team;
-import com.m2team.worldcup.qualifiers.teams.TeamActivity;
+import com.m2team.worldcup.qualifiers.teams.TeamDetailActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +90,7 @@ public class GroupQualifierAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 String json = gson.toJson(team);
-                context.startActivity(TeamActivity.createIntent(context, json));
+                context.startActivity(TeamDetailActivity.createIntent(context, json));
             }
         });
 

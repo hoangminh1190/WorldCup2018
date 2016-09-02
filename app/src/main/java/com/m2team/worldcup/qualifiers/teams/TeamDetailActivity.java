@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.m2team.worldcup.BaseActivity;
 import com.m2team.worldcup.R;
-import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Team;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class TeamActivity extends BaseActivity implements OnDataCompleteListener, AppBarLayout.OnOffsetChangedListener {
+public class TeamDetailActivity extends BaseActivity implements OnDataCompleteListener, AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.avatar)
     CircleImageView imageViewAvatar;
@@ -97,7 +94,7 @@ public class TeamActivity extends BaseActivity implements OnDataCompleteListener
 
         imageLoader.displayImage(team.getAvatar(), imageViewAvatar, options);
 
-        TeamPresenter presenter = new TeamPresenter(this);
+        TeamDetailPresenter presenter = new TeamDetailPresenter(this);
         presenter.setListener(this);
         presenter.getTeamDetail( team.getCode(), team.getTeamUrl());
 
@@ -115,7 +112,7 @@ public class TeamActivity extends BaseActivity implements OnDataCompleteListener
     }
 
     public static Intent createIntent(Context context, String teamUrl) {
-        Intent intent = new Intent(context, TeamActivity.class);
+        Intent intent = new Intent(context, TeamDetailActivity.class);
         intent.putExtra("url", teamUrl);
         return intent;
     }

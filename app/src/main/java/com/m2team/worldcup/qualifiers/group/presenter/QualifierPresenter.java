@@ -30,29 +30,56 @@ import rx.schedulers.Schedulers;
 
 import static com.m2team.worldcup.common.Common.TAG;
 
-public class AsiaQualifierPresenter extends Presenter {
+public class QualifierPresenter {
 
-
-    public static String LINK = "http://www.fifa.com/worldcup/preliminaries/asia/index.html";
 
     private OnDataCompleteListener listener;
     private Context mContext;
+    private String link;
 
-    public AsiaQualifierPresenter(Context context) {
+    public QualifierPresenter(Context context, String link) {
+        this.link = link;
         mContext = context;
     }
 
-    public void getData() {
-        getData(mContext, Common.ASIA_GROUPS_QUALIFIER, new QualifierSubscriber(), Common.ONE_DAY_IN_MILLISECONDS);
+    public void getData(final String preference, long expiredPeriod) {
+        Observable result = getDataStore(mContext, preference, expiredPeriod);
+        result.doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.e(TAG, "onError -> try to get from cache");
+                getFromCache(preference).observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new QualifierSubscriber());
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new QualifierSubscriber());
     }
 
-    public Observable<List<Group>> getFromServer() {
+    private Observable getDataStore(Context mContext, String preference, long expiredPeriod) {
+        String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
+        Log.d(TAG, "json from cache " + json);
+        if (!TextUtils.isEmpty(json)) {
+            long expiredTime = Common.getPrefLong(mContext, preference, Common.KEY_JSON_EXPIRED);
+            Log.d(TAG, "expired time = " + expiredTime);
+            if (System.currentTimeMillis() - expiredTime < expiredPeriod) { //data less than 1 days
+                Log.d(TAG, "Get from cache");
+                return getFromCache(preference);
+            }
+        }
+        return getFromServer(preference);
+    }
+
+
+    public Observable<List<Group>> getFromServer(final String preference) {
 
         return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
 
-                List<Group> groups = query(LINK);
+                List<Group> groups = query(link);
 
                 if (groups == null) {
                     subscriber.onError(new Throwable("Cannot get infor euro teams"));
@@ -71,8 +98,8 @@ public class AsiaQualifierPresenter extends Presenter {
                 Gson gson = new Gson();
                 String json = gson.toJson(groups, new TypeToken<List<Group>>() {
                 }.getType());
-                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA, json);
-                Common.putPrefValue(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Common.putPrefValue(mContext, preference, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, preference, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
                 Log.d(TAG, "save to cache done");
 
             }
@@ -80,12 +107,12 @@ public class AsiaQualifierPresenter extends Presenter {
 
     }
 
-    public Observable<List<Group>> getFromCache() {
+    public Observable<List<Group>> getFromCache(final String preference) {
         return Observable.create(new Observable.OnSubscribe<List<Group>>() {
             @Override
             public void call(Subscriber<? super List<Group>> subscriber) {
                 Gson gson = new Gson();
-                String json = Common.getPrefString(mContext, Common.ASIA_GROUPS_QUALIFIER, Common.KEY_JSON_DATA);
+                String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
                 if (!TextUtils.isEmpty(json)) {
                     List<Group> groupList = gson.fromJson(json, new TypeToken<List<Group>>() {
                     }.getType());

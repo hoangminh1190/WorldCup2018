@@ -1,4 +1,4 @@
-package com.m2team.worldcup.qualifiers.matches.presenter;
+package com.m2team.worldcup.qualifiers.teams;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,14 +12,14 @@ import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
 import com.m2team.worldcup.common.Common;
-import com.m2team.worldcup.model.Match;
+import com.m2team.worldcup.model.Team;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EuroMatchesFragment extends Fragment implements OnMatchesDataCompleteListener {
+public class TeamQualifierFragment extends Fragment implements OnAllTeamsDataCompleteListener {
 
 
     @BindView(R.id.recyclerView)
@@ -27,11 +27,10 @@ public class EuroMatchesFragment extends Fragment implements OnMatchesDataComple
     @BindView(R.id.progress)
     ProgressBar progressBar;
 
-    MatchQualifierAdapter adapter;
-    public static final String link = "http://www.fifa.com/worldcup/preliminaries/europe/all-matches.html";
+    AllTeamQualifierAdapter adapter;
 
-    public static EuroMatchesFragment newInstance(int position) {
-        EuroMatchesFragment f = new EuroMatchesFragment();
+    public static TeamQualifierFragment newInstance(int position) {
+        TeamQualifierFragment f = new TeamQualifierFragment();
         Bundle b = new Bundle();
         f.setArguments(b);
         return f;
@@ -41,9 +40,9 @@ public class EuroMatchesFragment extends Fragment implements OnMatchesDataComple
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EuroMatchesPresenter presenter = new EuroMatchesPresenter(getActivity(), link);
-        presenter.setOnDataComplete(this);
-        presenter.getData(getActivity(), Common.EURO_MATCHES_QUALIFIER, Common.ONE_DAY_IN_MILLISECONDS);
+        AllTeamPresenter presenter = new AllTeamPresenter(getActivity(), Common.EURO_QUALIFIER_LINK);
+        presenter.setListener(this);
+        presenter.getData(Common.EURO_TEAMS_QUALIFIER, Common.ONE_MONTH_IN_MILLISECONDS);
     }
 
     @Override
@@ -52,21 +51,19 @@ public class EuroMatchesFragment extends Fragment implements OnMatchesDataComple
 
         ButterKnife.bind(this, view);
 
-        adapter = new MatchQualifierAdapter(getActivity());
+        adapter = new AllTeamQualifierAdapter(getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
         return view;
     }
-
-
     @Override
-    public void updateView(List<Match> matches) {
-        if (matches == null) {
+    public void updateView(List<Team> teams) {
+        if (teams == null) {
             Snackbar.make(recyclerView, getString(R.string.error_get_data), Snackbar.LENGTH_SHORT).show();
         } else {
-            adapter.setMatches(matches);
+            adapter.setTeams(teams);
 
         }
     }

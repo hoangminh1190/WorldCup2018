@@ -7,9 +7,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.m2team.worldcup.common.Common;
-import com.m2team.worldcup.model.Group;
-import com.m2team.worldcup.model.Team;
-import com.m2team.worldcup.qualifiers.group.presenter.Presenter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,14 +25,14 @@ import rx.schedulers.Schedulers;
 
 import static com.m2team.worldcup.common.Common.TAG;
 
-public class TeamPresenter extends Presenter {
+public class TeamDetailPresenter {
 
     private static final String BASE_URL = "http://fifa.com";
     private OnDataCompleteListener listener;
     private Context mContext;
-    private String detailUrl, teamId;
+    private String detailUrl;
 
-    public TeamPresenter(Context context) {
+    public TeamDetailPresenter(Context context) {
         mContext = context;
     }
 
@@ -46,12 +43,32 @@ public class TeamPresenter extends Presenter {
     public void getTeamDetail(String teamId, String url) {
         url = url.replace("index", "profile-detail");
         detailUrl = BASE_URL + url;
-        this.teamId = teamId;
         Log.d("HMWC", "url = " + detailUrl);
 
-        getData(mContext, teamId, new TeamSubscriber(), Common.ONE_MONTH_IN_MILLISECONDS);
+        getData(teamId, Common.ONE_MONTH_IN_MILLISECONDS);
     }
 
+    public void getData(final String preference, long expiredPeriod) {
+        Observable result = getDataStore(mContext, preference, expiredPeriod);
+        result
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new TeamSubscriber());
+    }
+
+    private Observable getDataStore(Context mContext, String preference, long expiredPeriod) {
+        String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
+        Log.d(TAG, "json from cache " + json);
+        if (!TextUtils.isEmpty(json)) {
+            long expiredTime = Common.getPrefLong(mContext, preference, Common.KEY_JSON_EXPIRED);
+            Log.d(TAG, "expired time = " + expiredTime);
+            if (System.currentTimeMillis() - expiredTime < expiredPeriod) { //data less than 1 days
+                Log.d(TAG, "Get from cache");
+                return getFromCache(preference);
+            }
+        }
+        return getFromServer(preference);
+    }
 
     private List<String> queryDetail(String url) {
         List<String> infos = new ArrayList<>();
@@ -89,13 +106,12 @@ public class TeamPresenter extends Presenter {
         return null;
     }
 
-    @Override
-    public Observable getFromCache() {
+    public Observable getFromCache(final String preference) {
          return Observable.create(new Observable.OnSubscribe<List<String>>() {
              @Override
              public void call(Subscriber<? super List<String>> subscriber) {
                  Gson gson = new Gson();
-                 String json = Common.getPrefString(mContext, teamId, Common.KEY_JSON_DATA);
+                 String json = Common.getPrefString(mContext, preference, Common.KEY_JSON_DATA);
                  if (!TextUtils.isEmpty(json)) {
                      List<String> s = gson.fromJson(json, new TypeToken<List<String>>() {
                      }.getType());
@@ -107,8 +123,7 @@ public class TeamPresenter extends Presenter {
          });
     }
 
-    @Override
-    public Observable getFromServer() {
+    public Observable getFromServer(final String preference) {
         return Observable.create(new Observable.OnSubscribe<List<String>>() {
             @Override
             public void call(Subscriber<? super List<String>> subscriber) {
@@ -127,13 +142,12 @@ public class TeamPresenter extends Presenter {
                 Gson gson = new Gson();
                 String json = gson.toJson(strings, new TypeToken<List<String>>() {
                 }.getType());
-                Common.putPrefValue(mContext, teamId, Common.KEY_JSON_DATA, json);
-                Common.putPrefValue(mContext, teamId, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
+                Common.putPrefValue(mContext, preference, Common.KEY_JSON_DATA, json);
+                Common.putPrefValue(mContext, preference, Common.KEY_JSON_EXPIRED, System.currentTimeMillis());
                 Log.d(TAG, "save to cache done");
             }
         });
     }
-
 
     class TeamSubscriber extends Subscriber<List<String>> {
         @Override

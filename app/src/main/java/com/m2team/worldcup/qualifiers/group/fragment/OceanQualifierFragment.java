@@ -10,10 +10,11 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 
 import com.m2team.worldcup.R;
+import com.m2team.worldcup.common.Common;
 import com.m2team.worldcup.model.Group;
 import com.m2team.worldcup.qualifiers.group.GroupQualifierAdapter;
 import com.m2team.worldcup.qualifiers.group.OnDataCompleteListener;
-import com.m2team.worldcup.qualifiers.group.presenter.OceanQualifierPresenter;
+import com.m2team.worldcup.qualifiers.group.presenter.QualifierPresenter;
 
 import java.util.List;
 
@@ -41,9 +42,9 @@ public class OceanQualifierFragment extends Fragment implements OnDataCompleteLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        OceanQualifierPresenter presenter = new OceanQualifierPresenter(getActivity());
+        QualifierPresenter presenter = new QualifierPresenter(getActivity(), Common.OCENIA_QUALIFIER_LINK);
         presenter.setOnDataComplete(this);
-        presenter.getData();
+        presenter.getData(Common.OCEAN_GROUPS_QUALIFIER, Common.ONE_DAY_IN_MILLISECONDS);
     }
 
     @Override
